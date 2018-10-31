@@ -1,5 +1,6 @@
 package com.tay.behaviorcollector.Data;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
@@ -41,6 +42,8 @@ public class TouchDataResource implements View.OnTouchListener, DataResourceInte
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+
+
         float pressed;
 
         //在onTouchEvent(MotionEvent ev)中
@@ -59,6 +62,9 @@ public class TouchDataResource implements View.OnTouchListener, DataResourceInte
         } else {
             pressed = 0;
         }
+
+        Log.i("onTouch", "onTouch: " + System.nanoTime() + "：" + pressed);
+
 
         touchDataList[0] = event.getRawX();
         touchDataList[1] = event.getRawY();

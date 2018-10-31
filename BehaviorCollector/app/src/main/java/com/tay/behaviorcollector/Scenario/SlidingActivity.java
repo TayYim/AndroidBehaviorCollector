@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.gnepux.slideview.SlideView;
 import com.tay.behaviorcollector.Data.DataCenter;
@@ -22,6 +23,7 @@ public class SlidingActivity extends AppCompatActivity implements DataResourceIn
     private static final String TAG = "SlidingActivity";
     private DataCenter dataCenter;
     private static final String SCENARIO_NAME = "Sliding";
+    private SlideView slideView;
 
     // for data resource
     private float touchDataList[];
@@ -34,9 +36,20 @@ public class SlidingActivity extends AppCompatActivity implements DataResourceIn
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sliding);
 
+        // initial data resource
         this.batchSize = 5;
         touchDataList = new float[this.batchSize];
         this.resourceName = "slideTouch";
+
+        // config slide view
+        slideView = findViewById(R.id.slideView);
+        slideView.addSlideListener(new SlideView.OnSlideListener() {
+            @Override
+            public void onSlideSuccess() {
+                Toast.makeText(SlidingActivity.this, "确认成功", Toast.LENGTH_SHORT).show();
+                SlidingActivity.this.finish();
+            }
+        });
 
         bindDataResource();
     }

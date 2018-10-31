@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 textView_hint.setText(userIDInput + ": choose scenario");
                 user.setUserID(userIDInput);
 
-                button_plain.setEnabled(true);
+//                button_plain.setEnabled(true);
                 button_slide.setEnabled(true);
             }
         });
