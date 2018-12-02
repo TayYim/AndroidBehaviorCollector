@@ -1,35 +1,32 @@
 package com.tay.behaviorcollector.Scenario;
 
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.gnepux.slideview.SlideView;
 import com.tay.behaviorcollector.Data.DataCenter;
 import com.tay.behaviorcollector.Data.DataResourceInterface;
-import com.tay.behaviorcollector.Data.TouchDataResource;
 import com.tay.behaviorcollector.R;
+import com.tay.behaviorcollector.User;
 
 /**
  * this activity is also used as a data resource
  */
 public class SlidingActivity extends AppCompatActivity implements DataResourceInterface {
 
-    private static final String TAG = "SlidingActivity";
-    private DataCenter dataCenter;
     private static final String SCENARIO_NAME = "Sliding";
+    public int batchSize;
+    public String resourceName;
+    // action times
+    public int counter;
+    private DataCenter dataCenter;
     private SlideView slideView;
-
     // for data resource
     private float touchDataList[];
     private VelocityTracker mVelocityTracker;
-    public int batchSize;
-    public String resourceName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,29 +37,46 @@ public class SlidingActivity extends AppCompatActivity implements DataResourceIn
         this.batchSize = 5;
         touchDataList = new float[this.batchSize];
         this.resourceName = "slideTouch";
+        counter = 0;
 
         // config slide view
         slideView = findViewById(R.id.slideView);
         slideView.addSlideListener(new SlideView.OnSlideListener() {
+            /**
+             * call when slide finished
+             */
             @Override
             public void onSlideSuccess() {
-                Toast.makeText(SlidingActivity.this, "确认成功", Toast.LENGTH_SHORT).show();
-                SlidingActivity.this.finish();
+                Toast.makeText(SlidingActivity.this,
+                        "确认成功，还剩" + String.valueOf(User.getActionTimes() - counter - 1) + "次",
+                        Toast.LENGTH_SHORT)
+                        .show();
+
+                counter++;
+                dataCenter.stopCollecting();
+
+                if (counter < User.getActionTimes()) {
+                    // reset this activity and start again
+                    slideView.reset();
+                    bindDataResource();
+                } else {
+                    SlidingActivity.this.finish(); // kill this activity
+                }
             }
         });
 
         bindDataResource();
     }
 
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i(TAG, "onDestroy: destroy");
-        dataCenter.stopCollecting();
     }
 
     /**
      * important!!! check (https://juejin.im/post/5a0fab1bf265da432d27ad70)
+     *
      * @param event
      * @return
      */
@@ -95,16 +109,14 @@ public class SlidingActivity extends AppCompatActivity implements DataResourceIn
         return super.dispatchTouchEvent(event);
     }
 
+    /**
+     * bind data resource(this activity) to data center
+     */
     private void bindDataResource() {
-        TouchDataResource touchDataResource;
-
-        /**
-         * initial touchDataResource and activate it
-         */
-
-        dataCenter = new DataCenter(SCENARIO_NAME); // scenario name
+        dataCenter = new DataCenter(SCENARIO_NAME);
         dataCenter.addResource(this);
-        dataCenter.startCollecting(10, 10);
+        // collect data 1 time / 20ms
+        dataCenter.startCollecting(10, 20);
     }
 
     @Override

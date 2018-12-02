@@ -27,23 +27,15 @@ public class FileSaver {
     public  String getDir() {
 
         String dirPath = MainActivity.getContext().getExternalFilesDir(null).toString() + File.separator + "MeasureData";
-
         File dir = new File(dirPath);
 
         if (dir.exists()) {
-
             return dir.toString();
-
-
         } else {
-
             dir.mkdirs();
-
             Log.d("getDir", "保存路径不存在,");
-
             return dir.toString();
         }
-
     }
 
     /**
@@ -58,7 +50,7 @@ public class FileSaver {
             File file = new File(filePath);
             BufferedWriter bw = new BufferedWriter(new FileWriter(file, false));
             // set title
-            bw.write( "X/p" + "," + "Y/p" + "," + "Vx/p.ms-1" + "," + "Vy/p.ms-1" + "," + "Pressed");
+            bw.write("X" + "," + "Y" + "," + "Vx" + "," + "Vy" + "," + "Pressed");
             bw.newLine();
             // write data
             String line;

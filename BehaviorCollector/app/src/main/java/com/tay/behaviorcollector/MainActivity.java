@@ -1,12 +1,17 @@
 package com.tay.behaviorcollector;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.*;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tay.behaviorcollector.Scenario.PlainActivity;
 import com.tay.behaviorcollector.Scenario.SlidingActivity;
@@ -21,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private EditText editText_userID;
     private TextView textView_hint;
     private User user;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +42,10 @@ public class MainActivity extends AppCompatActivity {
         button_confirm = findViewById(R.id.button_confirm);
         editText_userID = findViewById(R.id.editText_userID);
         textView_hint = findViewById(R.id.textView_hint);
+
+        /** initial  toolbar **/
+        toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         /** initial  button_plain **/
         button_plain.setEnabled(false);
@@ -57,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /** button_confirm **/
+        /** initial button_confirm **/
         button_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -65,10 +75,57 @@ public class MainActivity extends AppCompatActivity {
                 textView_hint.setText(userIDInput + ": choose scenario");
                 user.setUserID(userIDInput);
 
-//                button_plain.setEnabled(true);
-                button_slide.setEnabled(true);
+                activate();
             }
         });
+    }
+
+    /**
+     * initial menu items
+     *
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    /**
+     * handle menu item events
+     *
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int id = item.getItemId();
+
+        if (id == R.id.action_config) {
+            Toast.makeText(context, "config", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(MainActivity.this, ConfigActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        deactivate();
+    }
+
+    private void activate() {
+        button_plain.setEnabled(true);
+        button_slide.setEnabled(true);
+    }
+
+    private void deactivate() {
+        button_plain.setEnabled(false);
+        button_slide.setEnabled(false);
     }
 
     public static Context getContext(){

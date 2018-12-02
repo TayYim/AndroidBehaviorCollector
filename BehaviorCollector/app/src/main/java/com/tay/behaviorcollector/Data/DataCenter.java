@@ -71,7 +71,7 @@ public class DataCenter {
 
         Log.i(TAG, "stopCollecting: stopped" + collectCount);
 
-        // file name = userID_[scenario name]_time stamp
+        // file name = userID_[scenario name]_timeStamp
         String fileName = userID + "_[" + scenarioName + "]_" + String.valueOf(System.currentTimeMillis());
         new FileSaver(fileName).saveFile(collectCount, resourceList, dataList);
     }
